@@ -13,13 +13,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
-import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.template.IItemDTO
 import com.laalsa.yumzy.dynamiclayoutrender.databinding.FragmentFirstBinding
 import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.SampleItemDTO
 import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.template.DynamicLayoutTemplate
+import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.template.IItemDTO
 
 
 /**
@@ -29,11 +28,12 @@ class FirstFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private var _binding: FragmentFirstBinding? = null
     var numberList = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
-//    var zeroNumberList = arrayOf("0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
+
+    //    var zeroNumberList = arrayOf("0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
     var dimensionArray: IntArray = intArrayOf()
     private val binding get() = _binding!!
     private var totalItems: Int = 5
-    private var layoutTotal:Int=0;
+    private var layoutTotal: Int = 0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -82,7 +82,7 @@ class FirstFragment : Fragment(), AdapterView.OnItemSelectedListener {
         binding.addSpinnerBtn.setOnClickListener {
             val childCount = binding.itemLayout.childCount
             val viewIndex = childCount + 1
-            val array = Array<Int>(viewIndex) { return@Array 1 }
+            val array = Array(viewIndex) { return@Array 1 }
             dimensionArray = array.toIntArray()
             val spinnerContent = getSpinnerContent(viewIndex)
             binding.itemLayout.addView(spinnerContent)
@@ -92,14 +92,22 @@ class FirstFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private fun addLayoutToContainer() {
 
-        if (binding.itemLayout.childCount==0){
-            Toast.makeText(requireContext(),"Add Spinner With Field to display",Toast.LENGTH_SHORT).show()
+        if (binding.itemLayout.childCount == 0) {
+            Toast.makeText(
+                requireContext(),
+                "Add Spinner With Field to display",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
 
         val dynamicLayoutTemplate =
-            DynamicLayoutTemplate(context = requireContext(), totalIndex = totalItems,layoutDimension = dimensionArray)
+            DynamicLayoutTemplate(
+                context = requireContext(),
+                totalIndex = totalItems,
+                layoutDimension = dimensionArray
+            )
         val itemList = Array<IItemDTO?>(totalItems, init = {
             return@Array SampleItemDTO()
         })
@@ -111,15 +119,15 @@ class FirstFragment : Fragment(), AdapterView.OnItemSelectedListener {
         )*/
         val materialCardView = MaterialCardView(requireContext())
         materialCardView.setBackgroundColor(Color.WHITE)
-        materialCardView.radius=8f
-        materialCardView.cardElevation=8f
-        materialCardView.setPadding(5,5,5,5)
+        materialCardView.radius = 8f
+        materialCardView.cardElevation = 8f
+        materialCardView.setPadding(5, 5, 5, 5)
         val layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        layoutParams.setMargins(15,15,15,15)
-        materialCardView.layoutParams= layoutParams
+        layoutParams.setMargins(15, 15, 15, 15)
+        materialCardView.layoutParams = layoutParams
 
         materialCardView.addView(dynamicLayoutTemplate)
 
@@ -145,12 +153,12 @@ class FirstFragment : Fragment(), AdapterView.OnItemSelectedListener {
         val clTopRoundRectangle = RoundRectShape(fArrLeftOuterRadius, null, null)
         val clLeftShape = ShapeDrawable(clTopRoundRectangle)
         clLeftShape.paint.color = iLeftColor
-        val clLeftroundrectangle = RoundRectShape(fArrRightOuterRadius, null, null)
-        val clRightShape = ShapeDrawable(clLeftroundrectangle)
+        val leftRectangle = RoundRectShape(fArrRightOuterRadius, null, null)
+        val clRightShape = ShapeDrawable(leftRectangle)
         clRightShape.paint.color = iRightColor
 
-        val drawarray = arrayOf<Drawable>(clLeftShape, clRightShape)
-        val clLayerDrawable = LayerDrawable(drawarray)
+        val drawArray = arrayOf<Drawable>(clLeftShape, clRightShape)
+        val clLayerDrawable = LayerDrawable(drawArray)
         clLayerDrawable.setLayerInset(0, 2, 8, 0, 8)
         clLayerDrawable.setLayerInset(1, 30, 10, 2, 10)
         return clLayerDrawable
@@ -196,16 +204,16 @@ class FirstFragment : Fragment(), AdapterView.OnItemSelectedListener {
             ) {
                 val numberString = numberList[position]
                 val numberValue = numberString.toInt()
-                layoutTotal+=numberValue
-                dimensionArray[viewIndex-1]= numberValue
-                if (layoutTotal>totalItems){
-                    Toast.makeText(requireContext(), "Select Valid Layout Total", Toast.LENGTH_SHORT)
+                layoutTotal += numberValue
+                dimensionArray[viewIndex - 1] = numberValue
+                if (layoutTotal > totalItems) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Select Valid Layout Total",
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 }
-
-
-
-
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
