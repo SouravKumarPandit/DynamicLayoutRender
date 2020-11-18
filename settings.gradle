@@ -1,0 +1,2 @@
+rootProject.name = "DynamicLayoutRender"
+include ':app'
