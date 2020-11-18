@@ -27,8 +27,9 @@ abstract class ItemTemplate : FrameLayout,
     constructor(
         context: Context,
         listRenderer: IListRenderer
-    ) : this(context, null, 0) {
+    ) : super(context, null, 0) {
         this.clListRenderer = listRenderer
+        inflateListItemView()
     }
 
     @Suppress("unused")
@@ -36,14 +37,13 @@ abstract class ItemTemplate : FrameLayout,
 
     @Suppress("unused")
     private constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+
+    @Suppress("unused")
     private constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
-    ) {
-        inflateListItemView()
-    }
-
+    )
 
     private val bd by lazy {
         val layoutInflater = LayoutInflater.from(context)
@@ -88,13 +88,12 @@ abstract class ItemTemplate : FrameLayout,
         this.id = R.id.template_layout
         this.setPadding(padding, padding, padding, padding)
 
-        val iLayoutDimensions = layoutDimensions
 
         val clLinearLayout = LinearLayout(context)
         clLinearLayout.orientation = LinearLayout.VERTICAL
 
-        for (i in iLayoutDimensions.indices) {
-            val iLayoutDimension = iLayoutDimensions[i]
+        for (i in layoutDimensions.indices) {
+            val iLayoutDimension = layoutDimensions[i]
             val clRowLinearLayout = getRowLayout()
             var iViewsLength = 0
             iViewsLength += iLayoutDimension
@@ -145,7 +144,7 @@ abstract class ItemTemplate : FrameLayout,
             clLinearLayout.addView(clRowLinearLayout)
         }
 
-        bd.shimmerViewContainer.addView(clLinearLayout, layoutParams)
+        bd.shimmerViewContainer.addView(clLinearLayout)
         iViewIndex = 0
     }
 

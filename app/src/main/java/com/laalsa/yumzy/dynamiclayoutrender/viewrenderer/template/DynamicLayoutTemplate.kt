@@ -9,7 +9,10 @@ import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.render.ListRenderer
 class DynamicLayoutTemplate(context: Context) :
     ItemTemplate(context, ListRenderer()) {
 
-    override val viewLength: Int = 5
-    override val layoutDimensions: IntArray = intArrayOf(1,1, 1,2)
-    override val arrTxtViewIds: IntArray = intArrayOf(121, 55, 65, 568, 64)
+    override val viewLength
+            get() =  5
+    override val layoutDimensions
+            get() = intArrayOf(2, 1,2)
+    override val arrTxtViewIds
+            get() = intArrayOf(121, 55, 65, 568, 64)
     }

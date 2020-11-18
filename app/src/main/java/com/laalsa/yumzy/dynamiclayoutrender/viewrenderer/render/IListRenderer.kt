@@ -7,14 +7,14 @@ import android.view.View
 interface IListRenderer {
     fun getViewAtIndex(
         context: Context,
-        clReportColumnDTO: IItemDTO?,
+        clItemDTO: IItemDTO?,
         iViewIndex: Int,
         iViewId: Int
     ): View?
 
     fun setValue(
         context: Context,
-        clReportColumnDTO: IItemDTO?,
+        clItemDTO: IItemDTO?,
         clView: View,
         objValue: Any?,
         objExtraValues: Array<Any?>?

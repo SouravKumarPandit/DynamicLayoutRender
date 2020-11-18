@@ -27,7 +27,7 @@ class FirstFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private var _binding: FragmentFirstBinding? = null
     var numberList = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
-
+    var intArray: IntArray = intArrayOf()
     private val binding get() = _binding!!
     private var totalItems: Int = 5
     override fun onCreateView(
@@ -56,6 +56,7 @@ class FirstFragment : Fragment(), AdapterView.OnItemSelectedListener {
         val itemList = Array<IItemDTO?>(totalIndex, init = {
             return@Array SampleItemDTO()
         })
+//        dynamicLayoutTemplate.inflateListItemView()
         dynamicLayoutTemplate.background = ResourcesCompat.getDrawable(
             resources,
             R.drawable.outline_box,
@@ -90,19 +91,18 @@ class FirstFragment : Fragment(), AdapterView.OnItemSelectedListener {
         clRightShape.paint.color = iRightColor
         val drawarray = arrayOf<Drawable>(clLeftShape, clRightShape)
         val clLayerDrawable = LayerDrawable(drawarray)
-        clLayerDrawable.setLayerInset(0, 0, 0, 25, 16)
-        clLayerDrawable.setLayerInset(1, 30, 0, 0, 16)
+        clLayerDrawable.setLayerInset(0, 0, 8, 25, 8)
+        clLayerDrawable.setLayerInset(1, 30, 8, 0, 8)
         return clLayerDrawable
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val s = numberList[position]
         totalItems = s.toInt()
-        var value: Array<String> = Array(
-            totalItems
-        ) {
-            return@Array "$it"
-        }
+        val array = Array<Int>(totalItems) { return@Array 0 }
+        intArray = array.toIntArray()
+
+
 
     }
 
