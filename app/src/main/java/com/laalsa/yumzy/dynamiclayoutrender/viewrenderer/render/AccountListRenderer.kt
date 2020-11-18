@@ -7,8 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.laalsa.app.gericrecyclersample.recyclerview.template.IItemDTO
-import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.render.IListRenderer
+import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.template.IItemDTO
 
 class AccountListRenderer : IListRenderer {
     override fun getViewAtIndex(

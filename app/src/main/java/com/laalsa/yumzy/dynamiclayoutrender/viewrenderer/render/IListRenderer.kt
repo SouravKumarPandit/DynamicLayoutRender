@@ -1,7 +1,7 @@
 package com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.render
 
 import android.content.Context
-import com.laalsa.app.gericrecyclersample.recyclerview.template.IItemDTO
+import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.template.IItemDTO
 import android.view.View
 
 interface IListRenderer {

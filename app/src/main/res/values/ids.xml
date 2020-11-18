@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="template_layout" type="id" />
+    <item name="item_1" type="id" />
+    <item name="item_2" type="id" />
+    <item name="item_3" type="id" />
+    <item name="item_4" type="id" />
+    <item name="item_5" type="id" />
 </resources>

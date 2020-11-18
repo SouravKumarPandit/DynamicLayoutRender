@@ -8,30 +8,33 @@ import android.graphics.drawable.shapes.RoundRectShape
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.widget.TextViewCompat
-import com.laalsa.app.gericrecyclersample.recyclerview.template.IItemDTO
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.laalsa.yumzy.dynamiclayoutrender.R
-import com.laalsa.yumzy.dynamiclayoutrender.databinding.LayoutTemplateBinding
 import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.CLViewIdGenerator.generateNewId
 import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.data.CLItemDTO
 import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.render.IListRenderer
+import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.render.ListRenderer
 
-abstract class ItemTemplate : FrameLayout,
+abstract class ItemTemplate constructor(
+    context: Context,
+    final override val viewLength: Int,
+    final override val layoutDimensions: IntArray,
+    final override val listRenderer: IListRenderer
+) : FrameLayout(context, null, 0),
     IItemTemplate {
-    constructor(
-        context: Context,
-        listRenderer: IListRenderer
-    ) : super(context, null, 0) {
-        this.clListRenderer = listRenderer
-        inflateListItemView()
-    }
+    private val shimmerFrameLayout: ShimmerFrameLayout = ShimmerFrameLayout(context)
+    override val arrTxtViewIds:IntArray = IntArray(viewLength)
 
+    init {
+        inflateListItemView()
+
+    }
     @Suppress("unused")
     private constructor(context: Context) : this(context, null, 0)
 
@@ -39,19 +42,18 @@ abstract class ItemTemplate : FrameLayout,
     private constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     @Suppress("unused")
-    private constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    private constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(
         context,
-        attrs,
-        defStyleAttr
+        3,
+        intArrayOf(1, 1, 1), ListRenderer()
     )
-
-    private val bd by lazy {
+/*
+    private val bd by lazy(LazyThreadSafetyMode.NONE) {
         val layoutInflater = LayoutInflater.from(context)
         LayoutTemplateBinding.inflate(layoutInflater, this, true)
-    }
+    }*/
 
 
-    private lateinit var clListRenderer: IListRenderer
     open val padding: Int = 5
     open val textPadding: Int = 0
     open var iViewIndex = 0
@@ -109,7 +111,7 @@ abstract class ItemTemplate : FrameLayout,
                 if (arrTxtViewIds[iViewIndex] == 0) {
                     arrTxtViewIds[iViewIndex] = generateNewId()
                 }
-                var childView = clListRenderer.getViewAtIndex(
+                var childView = listRenderer.getViewAtIndex(
                     context,
                     clItemDTO,
                     iViewIndex,
@@ -143,8 +145,9 @@ abstract class ItemTemplate : FrameLayout,
 
             clLinearLayout.addView(clRowLinearLayout)
         }
-
-        bd.shimmerViewContainer.addView(clLinearLayout)
+//        shimmerFrameLayout.layoutParams=ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+        shimmerFrameLayout.addView(clLinearLayout)
+        this.addView(shimmerFrameLayout)
         iViewIndex = 0
     }
 
@@ -161,7 +164,7 @@ abstract class ItemTemplate : FrameLayout,
         objAry: Array<Any?>?
     ) {
         val findViewById = this.findViewById<View>(iViewIndex)
-        clListRenderer.setValue(context, itemDTO, findViewById, obj, objAry)
+        listRenderer.setValue(context, itemDTO, findViewById, obj, objAry)
     }
 
     open fun getTextStyleable(iViewIndex: Int): Int {
@@ -173,20 +176,24 @@ abstract class ItemTemplate : FrameLayout,
     }
 
     fun setTemplateValue(itemList: Array<IItemDTO?>) {
-        bd.shimmerViewContainer.stopShimmer()
-        bd.shimmerViewContainer.clearAnimation()
-        bd.shimmerViewContainer.setShimmer(null)
+        shimmerFrameLayout.stopShimmer()
+        shimmerFrameLayout.clearAnimation()
+        shimmerFrameLayout.setShimmer(null)
 
 
-        for ((itemIndex, itemDTO) in itemList.withIndex()) {
-            val findViewById = this.findViewById<View>(arrTxtViewIds[itemIndex])
+        for ((viewIndex, viewId) in arrTxtViewIds.withIndex()) {
+            val findViewById = this.findViewById<View>(viewId)
             findViewById?.let {
                 findViewById.background = null
-                if (it is TextView)
-                    if (itemDTO != null) {
-                        it.text = itemDTO.text
+                if (it is TextView) {
+                    if (itemList.size > viewIndex) {
+                        val iItemDTO = itemList[viewIndex]
+                        if (iItemDTO != null) {
+                            it.text = iItemDTO.text
+                        }
                     } else
                         it.visibility = View.GONE
+                }
             }
         }
     }
@@ -206,12 +213,6 @@ abstract class ItemTemplate : FrameLayout,
     ): Drawable? {
         val iRadius = 8f
         val endPadding = if (viewIndex % 2 == 0) 100 else 50
-        /* val endPadding = when {
- //            totalRow > 1 -> 50
-             viewIndex % 2 != 0 -> 150
-             else -> 75
-         }*/
-
         val fArrRightOuterRadius =
             floatArrayOf(iRadius, iRadius, iRadius, iRadius, iRadius, iRadius, iRadius, iRadius)
         val clRightShape = ShapeDrawable(RoundRectShape(fArrRightOuterRadius, null, null))

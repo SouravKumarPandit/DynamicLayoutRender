@@ -1,5 +1,7 @@
 package com.laalsa.yumzy.dynamiclayoutrender
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
@@ -10,11 +12,11 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.widget.*
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import com.laalsa.app.gericrecyclersample.recyclerview.template.IItemDTO
+import com.google.android.material.card.MaterialCardView
+import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.template.IItemDTO
 import com.laalsa.yumzy.dynamiclayoutrender.databinding.FragmentFirstBinding
 import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.SampleItemDTO
 import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.template.DynamicLayoutTemplate
@@ -27,9 +29,11 @@ class FirstFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private var _binding: FragmentFirstBinding? = null
     var numberList = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
-    var intArray: IntArray = intArrayOf()
+//    var zeroNumberList = arrayOf("0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
+    var dimensionArray: IntArray = intArrayOf()
     private val binding get() = _binding!!
     private var totalItems: Int = 5
+    private var layoutTotal:Int=0;
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,34 +46,89 @@ class FirstFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val aa =
-            ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, numberList)
+        binding.materialButton.setOnClickListener {
+            binding.contentLayout.removeAllViews()
+
+        }
+
+        val aa = object :
+            ArrayAdapter<String>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                numberList
+            ) {
+
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
+                val dropDownView = super.getDropDownView(position, convertView, parent)
+                dropDownView.setPadding(55, 25, 55, 25)
+                dropDownView.background = getRoundedDrawable(0x80444444.toInt(), Color.WHITE)
+                return dropDownView
+            }
+
+        }
         binding.totalSpinner.adapter = aa
         binding.totalSpinner.onItemSelectedListener = this
+        binding.totalSpinner.setPopupBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        binding.totalSpinner.setPadding(25, 25, 55, 25)
+        binding.totalSpinner.background = getRoundedDrawable(0x80444444.toInt(), Color.WHITE)
+
         binding.btnAddLayout.setOnClickListener {
-            addLayoutToContainer(5)
+            addLayoutToContainer()
+        }
+        binding.addSpinnerBtn.setOnClickListener {
+            val childCount = binding.itemLayout.childCount
+            val viewIndex = childCount + 1
+            val array = Array<Int>(viewIndex) { return@Array 1 }
+            dimensionArray = array.toIntArray()
+            val spinnerContent = getSpinnerContent(viewIndex)
+            binding.itemLayout.addView(spinnerContent)
+
         }
     }
 
-    private fun addLayoutToContainer(totalIndex: Int) {
-        val dynamicLayoutTemplate = DynamicLayoutTemplate(requireContext())
-        val itemList = Array<IItemDTO?>(totalIndex, init = {
+    private fun addLayoutToContainer() {
+
+        if (binding.itemLayout.childCount==0){
+            Toast.makeText(requireContext(),"Add Spinner With Field to display",Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
+        val dynamicLayoutTemplate =
+            DynamicLayoutTemplate(context = requireContext(), totalIndex = totalItems,layoutDimension = dimensionArray)
+        val itemList = Array<IItemDTO?>(totalItems, init = {
             return@Array SampleItemDTO()
         })
 //        dynamicLayoutTemplate.inflateListItemView()
-        dynamicLayoutTemplate.background = ResourcesCompat.getDrawable(
+        /*dynamicLayoutTemplate.background = ResourcesCompat.getDrawable(
             resources,
             R.drawable.outline_box,
             requireContext().theme
+        )*/
+        val materialCardView = MaterialCardView(requireContext())
+        materialCardView.setBackgroundColor(Color.WHITE)
+        materialCardView.radius=8f
+        materialCardView.cardElevation=8f
+        materialCardView.setPadding(5,5,5,5)
+        val layoutParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
+        layoutParams.setMargins(15,15,15,15)
+        materialCardView.layoutParams= layoutParams
 
-        binding.contentLayout.addView(dynamicLayoutTemplate)
+        materialCardView.addView(dynamicLayoutTemplate)
+
+
+        binding.contentLayout.addView(materialCardView)
 
         Handler(Looper.getMainLooper()).postDelayed({
             dynamicLayoutTemplate.setTemplateValue(itemList)
-
-        }, 2000)
-
+        }, 3000)
 
     }
 
@@ -89,21 +148,72 @@ class FirstFragment : Fragment(), AdapterView.OnItemSelectedListener {
         val clLeftroundrectangle = RoundRectShape(fArrRightOuterRadius, null, null)
         val clRightShape = ShapeDrawable(clLeftroundrectangle)
         clRightShape.paint.color = iRightColor
+
         val drawarray = arrayOf<Drawable>(clLeftShape, clRightShape)
         val clLayerDrawable = LayerDrawable(drawarray)
-        clLayerDrawable.setLayerInset(0, 0, 8, 25, 8)
-        clLayerDrawable.setLayerInset(1, 30, 8, 0, 8)
+        clLayerDrawable.setLayerInset(0, 2, 8, 0, 8)
+        clLayerDrawable.setLayerInset(1, 30, 10, 2, 10)
         return clLayerDrawable
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val s = numberList[position]
         totalItems = s.toInt()
-        val array = Array<Int>(totalItems) { return@Array 0 }
-        intArray = array.toIntArray()
+        binding.itemLayout.removeAllViews()
+    }
+
+    private fun getSpinnerContent(viewIndex: Int): Spinner {
+        val spinner = Spinner(requireContext())
+        spinner.setPadding(25, 25, 55, 25)
+        spinner.background = getRoundedDrawable(0x80444444.toInt(), Color.WHITE)
+        spinner.setPopupBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val aa = object :
+            ArrayAdapter<String>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                numberList
+            ) {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
+                val dropDownView = super.getDropDownView(position, convertView, parent)
+                dropDownView.setPadding(35, 25, 55, 25)
+                dropDownView.background = getRoundedDrawable(0x80444444.toInt(), Color.WHITE)
+                return dropDownView
+            }
+        }
+
+        spinner.adapter = aa
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val numberString = numberList[position]
+                val numberValue = numberString.toInt()
+                layoutTotal+=numberValue
+                dimensionArray[viewIndex-1]= numberValue
+                if (layoutTotal>totalItems){
+                    Toast.makeText(requireContext(), "Select Valid Layout Total", Toast.LENGTH_SHORT)
+                        .show()
+                }
 
 
 
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+
+        return spinner
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {

@@ -13,4 +13,5 @@
     <string name="add_layout">Add Layout</string>
     <string name="total_number_of_fields_to_display">Total Number of Fields to Display</string>
     <string name="items_or_item_in_a_row">Items or Item in a row</string>
+    <string name="add_spinner">Add Spinner</string>
 </resources>

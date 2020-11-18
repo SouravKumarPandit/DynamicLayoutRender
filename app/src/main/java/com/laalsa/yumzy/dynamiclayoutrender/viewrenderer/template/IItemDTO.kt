@@ -1,4 +1,4 @@
-package com.laalsa.app.gericrecyclersample.recyclerview.template
+package com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.template
 
 import androidx.recyclerview.widget.RecyclerView
 import com.laalsa.app.gericrecyclersample.recyclerview.data.IKeyValue

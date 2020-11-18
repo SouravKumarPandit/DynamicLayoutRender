@@ -1,6 +1,6 @@
 package com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.data
 
-import com.laalsa.app.gericrecyclersample.recyclerview.template.IItemDTO
+import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.template.IItemDTO
 
 class CLItemDTO : IItemDTO //used to handle field names
 {

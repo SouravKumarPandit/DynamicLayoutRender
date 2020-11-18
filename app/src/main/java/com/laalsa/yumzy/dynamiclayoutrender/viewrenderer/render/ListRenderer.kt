@@ -2,7 +2,7 @@ package com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.render
 
 import android.content.Context
 import android.view.View
-import com.laalsa.app.gericrecyclersample.recyclerview.template.IItemDTO
+import com.laalsa.yumzy.dynamiclayoutrender.viewrenderer.template.IItemDTO
 
 class ListRenderer : IListRenderer {
     override fun getViewAtIndex(
